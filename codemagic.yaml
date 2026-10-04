@@ -1,0 +1,23 @@
+workflows:
+  android-debug-apk:
+    name: 3 Calendar Android APK
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    scripts:
+      - name: Set Android SDK location
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+
+      - name: Install Gradle 8.9
+        script: |
+          curl -L --fail -o /tmp/gradle.zip https://services.gradle.org/distributions/gradle-8.9-bin.zip
+          unzip -q /tmp/gradle.zip -d /tmp
+          /tmp/gradle-8.9/bin/gradle --version
+
+      - name: Build 3 Calendar debug APK
+        script: |
+          /tmp/gradle-8.9/bin/gradle assembleDebug --no-daemon
+
+    artifacts:
+      - app/build/outputs/apk/debug/app-debug.apk
